@@ -1,6 +1,7 @@
 require('dotenv').config();
 const http = require('http');
 const { Server } = require('socket.io');
+
 const connectDB = require('./config/db');
 const app = require('./app');
 const { configurePassport } = require('./config/passport');
@@ -16,7 +17,7 @@ const start = async () => {
 
   const io = new Server(server, {
     cors: {
-      origin: process.env.CLIENT_URL,
+      origin: process.env.CLIENT_URL || "*",
       methods: ['GET', 'POST']
     }
   });
