@@ -9,6 +9,10 @@ const { registerSocket } = require('./config/socket');
 
 const PORT = process.env.PORT || 5000;
 
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
+
 const start = async () => {
   await connectDB();
   configurePassport();
