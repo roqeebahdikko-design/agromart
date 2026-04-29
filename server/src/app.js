@@ -100,14 +100,14 @@ if (!fs.existsSync(uploadsPath)) {
 app.use('/uploads', express.static(uploadsPath));
 
 
-// Serve static files
-app.use(express.static(path.join(__dirname, '../../client/dist')));
+const clientPath = path.join(__dirname, '../../client/dist');
 
-// Catch-all route
+app.use(express.static(clientPath));
+
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
+  res.sendFile(path.join(clientPath, 'index.html'));
 });
-c
+
 // =======================
 // ERROR HANDLING (LAST)
 // =======================
