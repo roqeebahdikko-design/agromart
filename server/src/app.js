@@ -86,14 +86,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/payments', paymentRoutes);
 
 
-// =======================
-// ROOT ROUTE (IMPORTANT)
-// =======================
-app.get('/', (req, res) => {
-  res.status(200).json({
-    message: 'Agromart API is running...'
-  });
-});
+
 
 
 // =======================
@@ -107,11 +100,22 @@ if (!fs.existsSync(uploadsPath)) {
 app.use('/uploads', express.static(uploadsPath));
 
 
+// Serve static files
+app.use(express.static(path.join(__dirname, '../../client/dist')));
+
+// Catch-all route
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
+});
+c
 // =======================
 // ERROR HANDLING (LAST)
 // =======================
 app.use(notFound);
 app.use(errorHandler);
+
+
+
 
 
 module.exports = app;
