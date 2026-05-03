@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const http = require('http');
 const { Server } = require('socket.io');
 
@@ -9,40 +10,47 @@ const { registerSocket } = require('./config/socket');
 
 const PORT = process.env.PORT || 5000;
 
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
-
 const start = async () => {
-  await connectDB();
-  configurePassport();
+  try {
+    await connectDB();
+    configurePassport();
 
-  const server = http.createServer(app);
+    const server = http.createServer(app);
 
-  const io = new Server(server, {
-    cors: {
-      origin: process.env.CLIENT_URL || "*",
-      methods: ['GET', 'POST']
-    }
-  });
+    
+    const io = new Server(server, {
+      cors: {
+        origin: [
+          process.env.CLIENT_URL,
+          process.env.CLIENT_URL_2,
+          'http://localhost:5173'
+        ],
+        methods: ['GET', 'POST'],
+        credentials: true
+      }
+    });
 
-  registerSocket(io);
+    registerSocket(io);
 
-  server.on('error', (error) => {
-    if (error.code === 'EADDRINUSE') {
-      console.error(`Port ${PORT} is already in use.`);
-      process.exit(1);
-    }
-    throw error;
-  });
+    
+    server.on('error', (error) => {
+      if (error.code === 'EADDRINUSE') {
+        console.error(`Port ${PORT} is already in use`);
+        process.exit(1);
+      }
+      throw error;
+    });
 
-  server.listen(PORT, () => {
-    console.log(`Server listening on ${PORT}`);
-  });
+    
+    server.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+
+  } catch (error) {
+    console.error(' Server startup failed');
+    console.error(error);
+    process.exit(1);
+  }
 };
 
-start().catch((error) => {
-  console.error('Server startup failed.');
-  console.error(error);
-  process.exit(1);
-});
+start();
